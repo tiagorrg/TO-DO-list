@@ -235,24 +235,56 @@ body {
         display: none;
     }
 
+    .container .flag-container .triangle {
+        display: none;
+    }
+
+    .container .flag-container .triangle-inner {
+        display: none;
+    }
+
 }
 
 @media (max-width: 767px) {
+    h1 {
+        font-size: 45px;
+    }
+
+    body {
+        padding-top: 15px;
+        width: 100%;
+        overflow-y: auto;
+    }
 
     .container {
+        padding: 12px;
         max-width: 100%;
+        width: 95%;
     }
 
     .black-line {
         display: none;
     }
 
+    .container .flag-container .triangle {
+        display: none;
+    }
+
+
+    .container .flag-container .triangle-inner {
+        display: none;
+    }
+
+    .container .add-case .add-button {
+        font-size: 10px;
+    }
+
     .container .button-filter-wrapper {
         display: flex;
         flex-direction: column;
-        top: 120px;
-        left: -92px;
-        gap: 150px;
+        top: 220px;
+        left: -70px;
+        gap: 130px;
     }
 
     .container .button-filter-wrapper .bookmark {
@@ -262,5 +294,7 @@ body {
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 5px;
+        font-size: 11px;
     }
 }
