@@ -38,10 +38,9 @@ document.getElementsByClassName('add-button')[0].addEventListener('click', (e) =
 
     let id = 1
 
-    const sortedListTasks = quickSort([...currentListTasks])
+    const sortedListTasks = currentListTasks.sort((a, b) => a.id - b. id)
     
     for(let i = 0; i < sortedListTasks.length + 1; i++){
-        console.log(sortedListTasks[i], i+1)
         if (!sortedListTasks[i] || sortedListTasks[i].id !== i+1){
             id = i+1
             break
@@ -88,26 +87,6 @@ async function reminderTask (text) {
     }
 }
 
-function quickSort(arr) {
-    if (arr.length <= 1) {
-        return arr
-    }
-
-    const pivot = arr[arr.length - 1].id
-    const left = []
-    const right = []
-
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i].id < pivot) {
-            left.push(arr[i])
-        } else {
-            right.push(arr[i])
-        }
-    }
-
-    return quickSort(left).concat(arr.pop(), quickSort(right))
-}
-
 const visualFilterListTasks = (filterCompletedTasks) => {
     const filterListTasks = currentListTasks.filter(task => {
         return task.completed === filterCompletedTasks
@@ -130,31 +109,8 @@ const visualTask = (task, addToLS) => {
     createInputCheckBoxTask.classList.add('checkbox')
 
     createInputCheckBoxTask.addEventListener('change', (e) => {
-        if (e.target.checked) {
-            e.target.parentElement.getElementsByClassName('task-text')[0].classList.add('completed')
-        } else {
-            e.target.parentElement.getElementsByClassName('task-text')[0].classList.remove('completed')
-        }
-
-        for(task of currentListTasks) {
-            if (task.id === id) {
-                task.completed = e.target.checked
-
-                if (document.querySelectorAll('.button-current-tasks-js.active').length === 1){
-                    visualFilterListTasks(false)
-                    break
-                }
-
-                if (document.querySelectorAll('.button-completed-tasks-js.active').length === 1){
-                    visualFilterListTasks(true)
-                    break
-                }
-                break
-            }
-        }
-
-        localStorage.setItem(KEY_TASKS, JSON.stringify(currentListTasks))
-    })
+        toggleTaskCompletion(id, e.target.checked);
+    });
 
     taskListItem.appendChild(createInputCheckBoxTask)
 
@@ -181,27 +137,15 @@ const visualTask = (task, addToLS) => {
     const createButtonDelTask = document.createElement('button')
     createButtonDelTask.classList.add('delete-task')
     createButtonDelTask.innerHTML = 'Удалить'
-    createButtonDelTask.addEventListener('click', (e) => {
-        e.target.parentElement.remove()
-        
-        for(task of currentListTasks) {
-            if (task.id === id) {
-                currentListTasks.splice(currentListTasks.indexOf(task), 1)
-                break
-            }
-        }
-
-        localStorage.setItem(KEY_TASKS, JSON.stringify(currentListTasks))
-    })
-
+    createButtonDelTask.addEventListener('click', () => removeTask(id));
 
 
     taskListItem.appendChild(createButtonDelTask)
-    console.log('currentListTasks',currentListTasks)
+
     if (addToLS){
         currentListTasks.push(task)
     }
-    console.log('currentListTasks before',currentListTasks)
+
     return taskListItem
 }
 
@@ -220,3 +164,21 @@ const visualTasks = (tasks, addToLS) => {
         localStorage.setItem(KEY_TASKS, JSON.stringify(currentListTasks))
     }
 }
+
+const toggleTaskCompletion = (id, completed) => {
+    const task = currentListTasks.find(task => task.id === id);
+    if (task) {
+        task.completed = completed;
+        localStorage.setItem(KEY_TASKS, JSON.stringify(currentListTasks))
+        visualTasks(currentListTasks)
+    }
+};
+
+const removeTask = (id) => {
+    const taskIndex = currentListTasks.findIndex(task => task.id === id);
+    if (taskIndex !== -1) {
+        currentListTasks.splice(taskIndex, 1);
+        localStorage.setItem(KEY_TASKS, JSON.stringify(currentListTasks))
+        visualTasks(currentListTasks)
+    }
+};
